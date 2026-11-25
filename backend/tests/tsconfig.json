@@ -1,0 +1,10 @@
+{
+  // ตั้งค่า TypeScript สำหรับไฟล์ test (ให้ VS Code ตรวจชนิดข้อมูลได้ แต่ไม่ถูก build ลง dist/)
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": [".", "../src", "../vitest.config.ts"]
+}

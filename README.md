@@ -31,7 +31,7 @@ my-fullstack-app/
 │       └── types/                ชนิดข้อมูล TypeScript
 └── frontend/             หน้าเว็บด้วย Next.js (App Router) + TypeScript
     ├── Dockerfile
-    ├── .env.local.example        URL ของ API (คัดลอกเป็น frontend/.env.local)
+    ├── .env.example              URL ของ API (คัดลอกเป็น frontend/.env.local)
     ├── next.config.ts
     └── src/
         ├── app/                  หน้าเว็บ (layout.tsx, page.tsx, globals.css)
@@ -59,13 +59,29 @@ docker compose up --build
 ```powershell
 copy .env.example .env
 copy backend\.env.example backend\.env
-copy frontend\.env.local.example frontend\.env.local
+copy frontend\.env.example frontend\.env.local
 # แก้รหัสผ่านใน backend\.env ให้ตรงกับ MYSQL_PASSWORD ใน .env
 
 npm install          # ติดตั้งไลบรารีทั้ง frontend และ backend
 npm run db:up        # รันเฉพาะ MySQL ใน Docker
 npm run dev          # รัน backend + frontend พร้อมกัน
 ```
+
+## Unit Test (backend)
+
+ใช้ [Vitest](https://vitest.dev) + supertest ทดสอบ backend โดยไม่ต้องเปิดฐานข้อมูล (ใช้ mock แทน)
+
+```powershell
+npm install      # ครั้งแรก หรือหลังเพิ่มไลบรารีใหม่
+npm test         # รัน test ทั้งหมดครั้งเดียว
+cd backend
+npm run test:watch   # รันใหม่อัตโนมัติทุกครั้งที่แก้ไฟล์
+```
+
+| ไฟล์ | ทดสอบอะไร |
+| --- | --- |
+| `backend/tests/task.service.test.ts` | ชั้น service: SQL ที่ส่ง และการแปลงข้อมูลจาก MySQL เป็น Task |
+| `backend/tests/task.api.test.ts` | ทุกเส้นของ API: ตอบ status ถูก (200/201/204/400/404/500) และตรวจข้อมูลที่ส่งมา |
 
 ## API
 
