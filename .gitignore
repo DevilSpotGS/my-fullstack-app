@@ -1,0 +1,18 @@
+# ไลบรารีที่ npm ติดตั้ง (สร้างใหม่ได้ด้วย npm install)
+node_modules/
+
+# ไฟล์ที่ build ออกมา
+backend/dist/
+frontend/.next/
+frontend/out/
+*.tsbuildinfo
+frontend/next-env.d.ts
+
+# ไฟล์ตั้งค่าที่มีรหัสผ่าน: ห้ามขึ้น Git (เก็บแค่ .env.example)
+.env
+backend/.env
+frontend/.env.local
+
+# อื่นๆ
+.DS_Store
+npm-debug.log*

@@ -1,0 +1,58 @@
+# docker compose รัน 3 อย่างพร้อมกัน: ฐานข้อมูล (db), API (backend), หน้าเว็บ (frontend)
+# คำสั่ง: docker compose up --build
+# ค่าในรูปแบบ ${ชื่อ} ถูกอ่านจากไฟล์ .env ที่อยู่โฟลเดอร์เดียวกัน
+
+services:
+  # ---------- 1) ฐานข้อมูล MySQL ----------
+  db:
+    image: mysql:8.4 # image ทางการจาก Docker Hub
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306" # เครื่องคุณ:ในคอนเทนเนอร์
+    volumes:
+      - db_data:/var/lib/mysql # เก็บข้อมูลไว้ แม้ลบคอนเทนเนอร์
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # สร้างตารางตอนเริ่มครั้งแรก
+    healthcheck: # เช็กว่า MySQL พร้อมรับการเชื่อมต่อแล้ว
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # ---------- 2) API ด้วย Express ----------
+  backend:
+    build: ./backend # สร้าง image จาก backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: 4000
+      DB_HOST: db # ในเครือข่ายของ Docker เรียกฐานข้อมูลด้วยชื่อ service
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_NAME: ${MYSQL_DATABASE}
+      CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-3000}
+    ports:
+      - "${BACKEND_PORT:-4000}:4000"
+    depends_on:
+      db:
+        condition: service_healthy # รอให้ db พร้อมก่อนค่อยเริ่ม
+
+  # ---------- 3) หน้าเว็บด้วย Next.js ----------
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # ค่า NEXT_PUBLIC_* ถูกฝังลงไปตอน build จึงต้องส่งเป็น build arg
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

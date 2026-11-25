@@ -1,0 +1,16 @@
+{
+  // ตั้งค่า TypeScript ของ backend
+  "compilerOptions": {
+    "target": "ES2023", // แปลงโค้ดเป็น JavaScript รุ่นที่ Node.js 24 รันได้
+    "module": "NodeNext", // ใช้ระบบ import/export แบบ Node.js
+    "moduleResolution": "NodeNext",
+    "rootDir": "src", // โค้ด TypeScript อยู่ที่ src/
+    "outDir": "dist", // ไฟล์ JavaScript ที่ build แล้วไปอยู่ที่ dist/
+    "strict": true, // ตรวจชนิดข้อมูลแบบเข้มงวด จับบั๊กได้เร็ว
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true
+  },
+  "include": ["src"]
+}

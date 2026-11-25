@@ -1,0 +1,20 @@
+{
+  "name": "my-fullstack-app",
+  "private": true,
+  "description": "Next.js (frontend) + Express (backend) + TypeScript + MySQL + Docker",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose stop db",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7"
+  }
+}
