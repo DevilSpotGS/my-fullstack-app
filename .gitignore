@@ -16,3 +16,9 @@ frontend/.env.local
 # อื่นๆ
 .DS_Store
 npm-debug.log*
+
+# ผลลัพธ์จาก Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
