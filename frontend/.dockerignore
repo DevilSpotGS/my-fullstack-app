@@ -1,3 +1,6 @@
 node_modules
 .next
 .env.local
+# ไฟล์ test ไม่ต้องอยู่ใน image
+tests
+vitest.config.mts

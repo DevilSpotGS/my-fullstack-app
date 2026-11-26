@@ -67,21 +67,39 @@ npm run db:up        # รันเฉพาะ MySQL ใน Docker
 npm run dev          # รัน backend + frontend พร้อมกัน
 ```
 
-## Unit Test (backend)
+## Unit Test
 
-ใช้ [Vitest](https://vitest.dev) + supertest ทดสอบ backend โดยไม่ต้องเปิดฐานข้อมูล (ใช้ mock แทน)
+ใช้ [Vitest](https://vitest.dev) ทั้งสองฝั่ง ไม่ต้องเปิดฐานข้อมูลหรือ Docker (ใช้ mock แทน)
+
+- **backend**: Vitest + supertest
+- **frontend**: Vitest + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) + jsdom (จำลองเบราว์เซอร์)
 
 ```powershell
 npm install      # ครั้งแรก หรือหลังเพิ่มไลบรารีใหม่
-npm test         # รัน test ทั้งหมดครั้งเดียว
-cd backend
-npm run test:watch   # รันใหม่อัตโนมัติทุกครั้งที่แก้ไฟล์
+npm test         # รัน test ทั้ง backend และ frontend ครั้งเดียว
+
+npm test -w backend     # รันเฉพาะ backend
+npm test -w frontend    # รันเฉพาะ frontend
+npm run test:watch -w frontend   # รันใหม่อัตโนมัติทุกครั้งที่แก้ไฟล์
 ```
 
 | ไฟล์ | ทดสอบอะไร |
 | --- | --- |
 | `backend/tests/task.service.test.ts` | ชั้น service: SQL ที่ส่ง และการแปลงข้อมูลจาก MySQL เป็น Task |
 | `backend/tests/task.api.test.ts` | ทุกเส้นของ API: ตอบ status ถูก (200/201/204/400/404/500) และตรวจข้อมูลที่ส่งมา |
+| `frontend/tests/api.test.ts` | `src/lib/api.ts`: URL/method/body ที่ส่งไป และการแปลง error จาก backend เป็นข้อความ |
+| `frontend/tests/TaskList.test.tsx` | component รายการงาน: โหลด / เพิ่ม / ติ๊ก / ลบ ทั้งกรณีสำเร็จและ API error |
+
+## E2E Test (Playwright)
+
+ทดสอบผ่านเบราว์เซอร์จริง (Chrome + มือถือ) กับ API และ MySQL จริง ต้องเปิดแอปไว้ก่อน (`npm run docker:up`)
+
+```powershell
+npx playwright install chromium   # ครั้งแรกครั้งเดียว: ดาวน์โหลดเบราว์เซอร์
+npm run test:e2e          # รันเทสทั้งหมด
+npm run test:e2e:ui       # เปิดหน้าต่างดูเทสทีละขั้น
+npm run test:e2e:report   # ดูรายงานผลล่าสุด
+```
 
 ## API
 

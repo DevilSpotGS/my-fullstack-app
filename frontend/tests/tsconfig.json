@@ -1,0 +1,10 @@
+{
+  // ตั้งค่า TypeScript สำหรับไฟล์ test (ให้ VS Code ตรวจชนิดข้อมูลได้)
+  // ไฟล์ test ถูกตัดออกจาก tsconfig หลัก เพื่อไม่ให้ next build ต้องตรวจด้วย
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "@testing-library/jest-dom/vitest"]
+  },
+  "include": [".", "../src", "../vitest.config.mts"],
+  "exclude": []
+}
